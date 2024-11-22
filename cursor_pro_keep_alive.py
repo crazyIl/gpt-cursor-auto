@@ -311,6 +311,7 @@ if __name__ == "__main__":
     tab.get(login_url)
     
     print("开始执行删除和注册流程")
+    print("***请确认已经用https://tempmail.plus/zh邮箱成功申请过cursor账号！***")
     # 执行删除和注册流程
     if delete_account(browser, tab):
         print("账户删除成功")
