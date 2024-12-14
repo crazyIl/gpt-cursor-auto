@@ -3,6 +3,8 @@ from DrissionPage.common import Keys
 import re
 import time
 import random
+from cursor_auth_manager import CursorAuthManager
+
 
 def get_veri_code(tab):
     """获取验证码"""
@@ -199,6 +201,25 @@ def delete_account(browser, tab):
         print(f"点击Delete失败: {str(e)}")
         return False
 
+
+def get_cursor_session_token(tab):
+    """获取cursor session token"""
+    cookies = tab.cookies()
+    cursor_session_token = None
+    for cookie in cookies:
+        if cookie['name'] == 'WorkosCursorSessionToken':
+            cursor_session_token = cookie['value'].split('%3A%3A')[1]
+            break
+    return cursor_session_token
+
+
+def update_cursor_auth(email=None, access_token=None, refresh_token=None):
+    """
+    更新Cursor的认证信息的便捷函数
+    """
+    auth_manager = CursorAuthManager()
+    return auth_manager.update_auth(email, access_token, refresh_token)
+
 def sign_up_account(browser, tab):
     """注册账户流程"""
     print("\n开始注册新账户...")
@@ -293,6 +314,9 @@ if __name__ == "__main__":
     first_name = 'your_firstname'
     last_name = 'your_lastname'
 
+    auto_update_cursor_auth = True
+
+
     # 浏览器配置
     co = ChromiumOptions()
     co.add_extension("turnstilePatch")
@@ -318,7 +342,11 @@ if __name__ == "__main__":
         print("账户删除成功")
         time.sleep(3)
         if sign_up_account(browser, tab):
+            token = get_cursor_session_token(tab)
+            print(f"CursorSessionToken: {token}")
             print("账户注册成功")
+            if auto_update_cursor_auth:
+                update_cursor_auth(email=account, access_token=token, refresh_token=token)
         else:
             print("账户注册失败")
     else:
