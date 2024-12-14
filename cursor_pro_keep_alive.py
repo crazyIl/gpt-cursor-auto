@@ -161,7 +161,7 @@ def delete_account(browser, tab):
     # tab.get_screenshot('sign-in_success.png')
     # print("登录账户截图")
     
-    tab.get('https://www.cursor.com/settings')
+    tab.get(settings_url)
     print("进入设置页面")
 
     try:
@@ -296,6 +296,7 @@ def sign_up_account(browser, tab):
     handle_turnstile(tab)
     
     time.sleep(random.uniform(1,3))
+    tab.get(settings_url)
     # tab.get_screenshot("sign_up_success.png")
     # print("注册账户截图")
     print("注册完成")
@@ -307,6 +308,7 @@ if __name__ == "__main__":
     # 配置信息
     login_url = 'https://authenticator.cursor.sh'
     sign_up_url = 'https://authenticator.cursor.sh/sign-up'
+    settings_url = 'https://www.cursor.com/settings'
     mail_url = 'https://tempmail.plus'
  
     account = 'your_account'                  #必须是 username@mailto.plus 邮箱
