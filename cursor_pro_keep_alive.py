@@ -296,7 +296,16 @@ def sign_up_account(browser, tab):
     handle_turnstile(tab)
     
     time.sleep(random.uniform(1,3))
+    print("进入设置页面")
     tab.get(settings_url)
+    try:
+        usage_ele = tab.ele('xpath:/html/body/main/div/div/div/div/div/div[2]/div/div/div/div[1]/div[1]/span[2]')
+        if usage_ele:
+            usage_info = usage_ele.text
+            total_usage = usage_info.split('/')[-1].strip()
+            print("可用上限: " + total_usage)
+    except Exception as e:
+        print("获取可用上限失败")
     # tab.get_screenshot("sign_up_success.png")
     # print("注册账户截图")
     print("注册完成")
