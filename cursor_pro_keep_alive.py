@@ -12,7 +12,18 @@ def get_veri_code(tab):
     try:
         while True: 
             if tab.ele('@id=pre_button'):
-                tab.actions.click('@id=pre_button').type(Keys.CTRL_A).key_down(Keys.BACKSPACE).key_up(Keys.BACKSPACE).input(username).key_down(Keys.ENTER).key_up(Keys.ENTER)
+                # 先点击输入框，然后用 JavaScript 设置选中所有文本并删除
+                input_ele = tab.ele('@id=pre_button')
+                input_ele.click()
+                tab.run_js('''
+                    var input = document.getElementById("pre_button");
+                    input.select();
+                    input.setSelectionRange(0, input.value.length);
+                    document.execCommand('delete');
+                ''')
+                time.sleep(0.5)
+                input_ele.input(username)
+                tab.actions.key_down(Keys.ENTER).key_up(Keys.ENTER)
                 break
             time.sleep(1)
 
@@ -327,6 +338,8 @@ if __name__ == "__main__":
 
     auto_update_cursor_auth = True
 
+    no_need_delete_account = True
+
 
     # 浏览器配置
     co = ChromiumOptions()
@@ -349,7 +362,7 @@ if __name__ == "__main__":
     tab.get(login_url)
     
     # 执行删除和注册流程
-    if delete_account(browser, tab):
+    if no_need_delete_account or delete_account(browser, tab):
         print("账户删除成功")
         time.sleep(3)
         if sign_up_account(browser, tab):
